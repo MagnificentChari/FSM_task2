@@ -30,7 +30,7 @@ void lexer(vector<FSM>& fsms) {
 
     vector<bool> isNotDone;
 
-    for (FSM fsm : fsms) {
+    for (int i = 0; i < fsms.size(); i++) {
         isNotDone.push_back(true);
     }
 
