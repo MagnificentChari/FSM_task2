@@ -28,7 +28,7 @@
     <ClInclude Include="FSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FSMs.h">
+    <ClInclude Include="init.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

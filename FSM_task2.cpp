@@ -3,40 +3,41 @@
 #include <map>
 #include <set>
 #include <vector>
-#include "FSMs.h"
+#include "init.h"
 
 using namespace std;
 
-void printOutput(ofstream& output, string lexem, string str, set<string> keywords) {
+void printOutput(ofstream& output, string type, string str, set<string>& keywords) {
     str.pop_back();
-    if (lexem == "iden") {
-        lexem = keywords.count(str) ? "keyword" : lexem;
+    if (type == "iden") {
+        type = keywords.count(str) ? "keyword" : type;
     }
-    output << "< " << lexem << ", " << '"' << str << '"' << " >" << endl;
+    output << "< " << type << ", " << '"' << str << '"' << " >" << endl;
 }
 
-void lexer(vector<FSM> fsms) {
+void lexer(vector<FSM>& fsms) {
     ifstream input("input.txt");
     ofstream output("output.txt");
+    streampos prevSymbPos = 0;
+    char ch;
+
     string lexem = "";
     set<string> keywords = initKeywords();
-    char ch;
+    
     bool allDone;
     bool canMove;
-    streampos prevSymbPos = 0;
+    bool haveAnswer;
 
     vector<bool> isNotDone;
-    vector<FSM> answers;
-    vector<int> rounds;
+
     for (FSM fsm : fsms) {
         isNotDone.push_back(true);
-        rounds.push_back(0);
     }
 
-    for (input.get(ch); !input.eof(); input.get(ch))
-    {
+    for (input.get(ch); !input.eof(); input.get(ch)) {
         lexem += ch;
         allDone = true;
+        haveAnswer = false;
         for (int i = 0; i < fsms.size(); i++) {
             if (isNotDone[i]) {
                 canMove = fsms[i].nextState(ch);
@@ -44,33 +45,24 @@ void lexer(vector<FSM> fsms) {
                 if (!canMove) {
                     isNotDone[i] = false;
                 }
-                else {
-                    rounds[i] += 1;
-                }
             }
         }
         if (allDone) {
             for (int i = 0; i < fsms.size(); i++) {
-                if ((fsms[i].isFinal()) && (rounds[i] == lexem.size() - 1)) {
-                    answers.push_back(fsms[i]);
+                if (fsms[i].isFinal()) {
+                    printOutput(output, fsms[i].getType(), lexem, keywords);
+                    haveAnswer = true;
+                    break;
                 }
             }
-
-            for (FSM answer : answers) {
-                printOutput(output, answer.getType(), lexem, keywords);
-            }
-
             for (int i = 0; i < fsms.size(); i++) {
                 isNotDone[i] = true;
                 fsms[i].reset();
-                rounds[i] = 0;
             }
-
             lexem = "";
-            if (!answers.empty()) {
+            if (haveAnswer) {
                 input.seekg(prevSymbPos);
             }
-            answers.clear();
         }
         prevSymbPos = input.tellg();
     }
@@ -79,9 +71,8 @@ void lexer(vector<FSM> fsms) {
     output.close();
 }
 
-
 int main()
 {
-    vector<FSM> FSMs = initFSM();
+    vector<FSM> FSMs = initFSMs();
     lexer(FSMs);
 }

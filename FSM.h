@@ -3,53 +3,53 @@
 using namespace std;
 
 class FSM {
-private:
-    string initialState;
-    string currentState;
-    string type;
-    set<string> finalStates;
-    map<pair<string, char>, string> setState;
-public:
-    FSM() {
-        initialState = "start";
-        currentState = initialState;
-    }
-
-    bool nextState(char symbol) {
-        if (!setState.count(make_pair(currentState, symbol))) {
-            return false;
+    private:
+        string initialState;
+        string currentState;
+        string type;
+        set<string> finalStates;
+        map<pair<string, char>, string> setState;
+    public:
+        FSM() {
+            initialState = "start";
+            currentState = initialState;
         }
-        else {
-            currentState = setState[make_pair(currentState, symbol)];
-            return true;
+
+        void newFinalState(string state) {
+            finalStates.insert(state);
         }
-    }
 
-    bool isFinal() {
-        return finalStates.count(currentState);
-    }
+        void newState(string from, char with, string to) {
+            setState[make_pair(from, with)] = to;
+        }
 
-    void newFinalState(string state) {
-        finalStates.insert(state);
-    }
+        void setType(string t) {
+            type = t;
+        }
 
-    void newState(string from, char with, string to) {
-        setState[make_pair(from, with)] = to;
-    }
+        bool nextState(char symbol) {
+            if (!setState.count(make_pair(currentState, symbol))) {
+                return false;
+            }
+            else {
+                currentState = setState[make_pair(currentState, symbol)];
+                return true;
+            }
+        }
 
-    void reset() {
-        currentState = initialState;
-    }
+        string getState() {
+            return currentState;
+        }
 
-    string getState() {
-        return currentState;
-    }
+        string getType() {
+            return type;
+        }
 
-    string getType() {
-        return type;
-    }
+        bool isFinal() {
+            return finalStates.count(currentState);
+        }
 
-    void setType(string t) {
-        type = t;
-    }
+        void reset() {
+            currentState = initialState;
+        }
 };

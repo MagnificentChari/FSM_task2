@@ -3,7 +3,7 @@
 
 using namespace std;
 
-vector<FSM> initFSM() {
+vector<FSM> initFSMs() {
     vector<FSM> fsms;
 
     FSM NUMBER;
@@ -78,9 +78,17 @@ vector<FSM> initFSM() {
     for (string op : operators) {
         OPERATOR.newFinalState(op);
     }
+    OPERATOR.newFinalState("{");
+    OPERATOR.newFinalState("}");
+    OPERATOR.newFinalState("(");
+    OPERATOR.newFinalState(")");
     for (char op : singleOperators) {
         OPERATOR.newState("start", op, string(1, op));
     }
+    OPERATOR.newState("start", '{', "{");
+    OPERATOR.newState("start", '}', "}");
+    OPERATOR.newState("start", '(', "(");
+    OPERATOR.newState("start", ')', ")");
     OPERATOR.newState("<", '=', "<=");
     OPERATOR.newState(">", '=', ">=");
     OPERATOR.newState("=", '=', "==");
@@ -90,14 +98,6 @@ vector<FSM> initFSM() {
     OPERATOR.newState("-", '=', "-=");
     OPERATOR.newState("/", '=', "/=");
     OPERATOR.newState("!", '=', "!=");
-    OPERATOR.newFinalState("{");
-    OPERATOR.newFinalState("}");
-    OPERATOR.newState("start", '{', "{");
-    OPERATOR.newState("start", '}', "}");
-    OPERATOR.newFinalState("(");
-    OPERATOR.newFinalState(")");
-    OPERATOR.newState("start", '(', "(");
-    OPERATOR.newState("start", ')', ")");
     fsms.push_back(OPERATOR);
 
     FSM SEMICOLON;
@@ -119,5 +119,6 @@ set<string> initKeywords() {
     types.insert("int");
     types.insert("boolean");
     types.insert("double");
+
     return types;
 }
