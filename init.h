@@ -37,6 +37,10 @@ vector<FSM> initFSMs() {
         IDEN.newState("iden", c, "iden");
         IDEN.newState("start", c, "iden");
     }
+    for (char c = 'A'; c <= 'Z'; c++) {
+        IDEN.newState("iden", c, "iden");
+        IDEN.newState("start", c, "iden");
+    }
     for (char c = '0'; c <= '9'; c++) {
         IDEN.newState("iden", c, "iden");
     }
