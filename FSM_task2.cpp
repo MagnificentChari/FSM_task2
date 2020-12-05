@@ -19,6 +19,7 @@ void lexer(vector<FSM> fsms) {
     ifstream input("input.txt");
     ofstream output("output.txt");
     string lexem = "";
+    set<string> keywords = initKeywords();
     char ch;
     bool allDone;
     bool canMove;
@@ -34,7 +35,6 @@ void lexer(vector<FSM> fsms) {
 
     for (input.get(ch); !input.eof(); input.get(ch))
     {
-        set<string> keywords = initKeywords();
         lexem += ch;
         allDone = true;
         for (int i = 0; i < fsms.size(); i++) {
@@ -82,8 +82,6 @@ void lexer(vector<FSM> fsms) {
 
 int main()
 {
-    setlocale(LC_ALL, "rus");
-
     vector<FSM> FSMs = initFSM();
     lexer(FSMs);
 }
